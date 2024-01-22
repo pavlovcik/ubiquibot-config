@@ -394,6 +394,7 @@ export const botConfigSchema = strictObject(
         setLabel: Type.Boolean({ default: true }),
         fundExternalClosedIssue: Type.Boolean({ default: true }),
       }),
+      isNftRewardEnabled: Type.Boolean({ default: false }),
     }),
 
     timers: strictObject({

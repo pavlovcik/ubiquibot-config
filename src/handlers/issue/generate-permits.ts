@@ -1,13 +1,14 @@
 import Decimal from "decimal.js";
 import { stringify } from "yaml";
 
-import { SupabaseClient } from "@supabase/supabase-js";
 import { getTokenSymbol } from "../../helpers/contracts";
 import { getPayoutConfigByNetworkId } from "../../helpers/payout";
 import structuredMetadata from "../../shared/structured-metadata";
 import { BotConfig, GitHubIssue } from "../../types/payload";
 import { generatePermit2Signature } from "./generate-permit-2-signature";
 import { UserScoreTotals } from "./issue-shared-types";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { generateNftMintSignature } from "./generate-nft-mint-signature";
 
 type TotalsById = { [userId: string]: UserScoreTotals };
 
@@ -17,19 +18,21 @@ export async function generatePermits(
   config: BotConfig,
   supabase: SupabaseClient
 ) {
-  const { html: comment, permits } = await generateComment(totals, issue, config, supabase);
-  const metadata = structuredMetadata.create("Permits", { permits, totals });
+  const { html: comment, allTxs } = await generateComment(totals, issue, config, supabase);
+  const metadata = structuredMetadata.create("Transactions", { allTxs, totals });
   return comment.concat("\n", metadata);
 }
 
 async function generateComment(totals: TotalsById, issue: GitHubIssue, config: BotConfig, supabase: SupabaseClient) {
-
+  const {
+    features: { isNftRewardEnabled },
+  } = config;
   const { rpc, paymentToken } = getPayoutConfigByNetworkId(config.payments.evmNetworkId);
 
   const tokenSymbol = await getTokenSymbol(paymentToken, rpc);
   const htmlArray = [] as string[];
 
-  const permits = [];
+  const allTxs = [];
 
   for (const userId in totals) {
     const userTotals = totals[userId];
@@ -48,17 +51,44 @@ async function generateComment(totals: TotalsById, issue: GitHubIssue, config: B
 
     const beneficiaryAddress = data.length > 0 ? data[0].wallets.address : "";
 
+    const permits = [];
     const permit = await generatePermit2Signature({
       beneficiary: beneficiaryAddress,
       amount: tokenAmount,
       userId: userId,
+      organizationName: issue.repository_url.split("/").slice(-2)[0],
+      repositoryName: issue.repository_url.split("/").slice(-1)[0],
+      issueNumber: issue.number.toString(),
       config,
     });
-
     permits.push(permit);
+    allTxs.push(permit);
+
+    const nftMints = [];
+    if (isNftRewardEnabled && userTotals.details.length > 0) {
+      const contributions = userTotals.details.map((detail) => detail.contribution).join(",");
+      const nftMint = await generateNftMintSignature({
+        organizationName: issue.repository_url.split("/").slice(-2)[0],
+        repositoryName: issue.repository_url.split("/").slice(-1)[0],
+        issueNumber: issue.number.toString(),
+        beneficiary: beneficiaryAddress,
+        username: contributorName,
+        contributionType: contributions,
+      });
+      nftMints.push(nftMint);
+      allTxs.push(nftMint);
+    }
+
+    const claimData = [
+      ...permits.map((permit) => ({ type: "permit", ...permit })),
+      ...nftMints.map((nftMint) => ({ type: "nft-mint", ...nftMint })),
+    ];
+    const base64encodedClaimData = Buffer.from(JSON.stringify(claimData)).toString("base64");
+    const claimUrl = new URL("https://pay.ubq.fi/");
+    claimUrl.searchParams.append("claim", base64encodedClaimData);
 
     const html = generateHtml({
-      permit: permit.url,
+      claimUrl,
       tokenAmount,
       tokenSymbol,
       contributorName,
@@ -67,10 +97,10 @@ async function generateComment(totals: TotalsById, issue: GitHubIssue, config: B
     });
     htmlArray.push(html);
   }
-  return { html: htmlArray.join("\n"), permits };
+  return { html: htmlArray.join("\n"), allTxs };
 }
 function generateHtml({
-  permit,
+  claimUrl,
   tokenAmount,
   tokenSymbol,
   contributorName,
@@ -83,7 +113,7 @@ function generateHtml({
       <b
         ><h3>
           <a
-            href="${permit.toString()}"
+            href="${claimUrl.toString()}"
           >
             [ ${tokenAmount} ${tokenSymbol} ]</a
           >
@@ -242,7 +272,7 @@ function zeroToHyphen(value: number | Decimal) {
 }
 
 interface GenerateHtmlParams {
-  permit: URL;
+  claimUrl: URL;
   tokenAmount: Decimal;
   tokenSymbol: string;
   contributorName: string;
