@@ -25,4 +25,4 @@ plugins:
       with:
         reviewDelayTolerance: "3 Days"
         taskStaleTimeoutDuration: "30 Days"
-        startRequiresWallet: false # default is true
+        startRequiresWallet: true # default is true
