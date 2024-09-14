@@ -21,7 +21,7 @@ plugins:
           setLabel: true
           fundExternalClosedIssue: false
   - uses:
-    - plugin: https://ubiquibot-command-start-stop-chore-new-assign-design.ubq.workers.dev
+    - plugin: https://ubiquibot-command-start-stop-chore-new-assign-design.ubq.workers.dev/
       with:
         reviewDelayTolerance: "3 Days"
         taskStaleTimeoutDuration: "30 Days"
