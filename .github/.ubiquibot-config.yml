@@ -1,0 +1,7 @@
+plugins:
+ - uses:
+    - plugin: https://ubiquibot-command-start-stop-development.ubiquity.workers.dev
+      with:
+        reviewDelayTolerance: "3 Days"
+        taskStaleTimeoutDuration: "30 Days"
+        startRequiresWallet: false # default is true
