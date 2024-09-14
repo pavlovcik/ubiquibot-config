@@ -1,10 +1,10 @@
 plugins:
   - uses: 
       plugin: https://ubiquibot-command-start-stop.0x4007.workers.dev
-    with:
-      reviewDelayTolerance: "3 Days"
-      taskStaleTimeoutDuration: "30 Days"
-      startRequiresWallet: true # default is true
+      with:
+        reviewDelayTolerance: "3 Days"
+        taskStaleTimeoutDuration: "30 Days"
+        startRequiresWallet: true # default is true
 
 
 
