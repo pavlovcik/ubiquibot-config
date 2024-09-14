@@ -1,4 +1,5 @@
 plugins:
+  - skipBotEvents: false
   - uses:
     - plugin: https://ubiquibot-assistive-pricing-development.ubiquity.workers.dev
       with:
@@ -20,7 +21,6 @@ plugins:
         publicAccessControl:
           setLabel: true
           fundExternalClosedIssue: false
-  - skipBotEvents: false
   - uses:
     - plugin: https://ubiquibot-command-start-stop-development.ubiquity.workers.dev
       with:
