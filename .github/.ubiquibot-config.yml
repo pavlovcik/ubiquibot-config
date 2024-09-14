@@ -1,5 +1,4 @@
 plugins:
-  - skipBotEvents: false
   - uses:
     - plugin: https://ubiquibot-assistive-pricing-development.ubiquity.workers.dev
       with:
