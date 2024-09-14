@@ -1,4 +1,12 @@
 plugins:
+
+  - uses:
+    - plugin: https://ubiquibot-command-start-stop-chore-new-assign-design.ubq.workers.dev
+      # with:
+        # reviewDelayTolerance: "3 Days"
+        # taskStaleTimeoutDuration: "30 Days"
+        # startRequiresWallet: true # default is true
+
   # - uses:
   #   - plugin: https://ubiquibot-assistive-pricing-development.ubiquity.workers.dev
   #     with:
@@ -20,9 +28,3 @@ plugins:
   #       publicAccessControl:
   #         setLabel: true
   #         fundExternalClosedIssue: false
-  - uses:
-    - plugin: https://ubiquibot-command-start-stop-chore-new-assign-design.ubq.workers.dev
-      with:
-        reviewDelayTolerance: "3 Days"
-        taskStaleTimeoutDuration: "30 Days"
-        startRequiresWallet: true # default is true
