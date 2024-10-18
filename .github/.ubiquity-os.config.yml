@@ -11,8 +11,8 @@ plugins:
           taskStaleTimeoutDuration: "30 Days"
           startRequiresWallet: true
           maxConcurrentTasks:
-            member: 2
-            contributor: 2
+            member: 4
+            contributor: 4
           emptyWalletText: "Please set your wallet address with the /wallet command first and try again."
           rolesWithReviewAuthority:
             - "COLLABORATOR"
