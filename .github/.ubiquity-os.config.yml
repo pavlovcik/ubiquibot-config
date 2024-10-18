@@ -1,14 +1,18 @@
-plugins:
   - uses:
-    - plugin: https://ubiquibot-command-start-stop.0x4007.workers.dev
+    - plugin: https://ubiquibot-command-start-stop-development.ubiquity.workers.dev
       with:
         reviewDelayTolerance: "3 Days"
         taskStaleTimeoutDuration: "30 Days"
-
-
-
-
-
+        startRequiresWallet: true
+        maxConcurrentTasks:
+          member: 2
+          contributor: 2
+        emptyWalletText: "Please set your wallet address with the /wallet command first and try again."
+        rolesWithReviewAuthority:
+          - COLLABORATOR
+          - OWNER
+          - MEMBER
+          - ADMIN
 
   - uses:
     - plugin: https://ubiquibot-assistive-pricing-development.ubiquity.workers.dev
