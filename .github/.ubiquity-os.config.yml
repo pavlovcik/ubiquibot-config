@@ -1,12 +1,12 @@
-  - uses:
+- uses:
     - plugin: https://ubiquibot-command-start-stop-development.ubiquity.workers.dev
       with:
         reviewDelayTolerance: "3 Days"
         taskStaleTimeoutDuration: "30 Days"
         startRequiresWallet: true
         maxConcurrentTasks:
-          member: 2
-          contributor: 2
+          member: 3
+          contributor: 3
         emptyWalletText: "Please set your wallet address with the /wallet command first and try again."
         rolesWithReviewAuthority:
           - COLLABORATOR
