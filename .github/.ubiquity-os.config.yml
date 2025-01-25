@@ -1,5 +1,9 @@
 plugins:
   - uses:
+      - plugin: 0x4007/command-config
+        # with:
+        #   registerWalletWithVerification: false
+  - uses:
       - plugin: https://ubiquity-os-command-start-stop-main.ubiquity.workers.dev
         skipBotEvents: false
         with:
