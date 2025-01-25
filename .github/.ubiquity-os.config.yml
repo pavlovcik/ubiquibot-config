@@ -1,6 +1,6 @@
 plugins:
   - uses:
-      - plugin: 0x4007/command-config
+      - plugin: 0x4007/command-config@chore/setup-plugin-hosting
         # with:
         #   registerWalletWithVerification: false
   - uses:
